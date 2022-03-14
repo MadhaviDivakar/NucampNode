@@ -117,7 +117,7 @@ campsiteRouter.route('/:campsiteId/comments')
     res.statusCode = 403;
     res.end(`PUT operation not supported on /campsites/${req.params.campsiteId}/comments`);
 })
-.delete(authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
     Campsite.findById(req.params.campsiteId)
     .then(campsite => {
         if (campsite) {
@@ -168,7 +168,7 @@ campsiteRouter.route('/:campsiteId/comments/:commentId')
 .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Campsite.findById(req.params.campsiteId)
     .then(campsite => {
-        if (req.body.author.equals(req.user._id)){
+        if((campsite.comments.id(req.params.commentId).author._id).equals(req.user._id)) {
             if (campsite && campsite.comments.id(req.params.commentId)) {
                 if (req.body.rating) {
                     campsite.comments.id(req.params.commentId).rating = req.body.rating;
@@ -196,14 +196,14 @@ campsiteRouter.route('/:campsiteId/comments/:commentId')
             err = new Error(` you ${req.user_.id} are not the author of this comment `);
             err.status = 403;
             return next(err);
-         }
+        }
     })
     .catch(err => next(err));
 })
 .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Campsite.findById(req.params.campsiteId)
     .then(campsite => {
-        if (req.body.author.equals(req.user._id)){
+        if((campsite.comments.id(req.params.commentId).author._id).equals(req.user._id)) {
             if (campsite && campsite.comments.id(req.params.commentId)) {
                 campsite.comments.id(req.params.commentId).remove();
                 campsite.save()
