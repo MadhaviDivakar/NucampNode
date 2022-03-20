@@ -1,5 +1,4 @@
 node_modules
 bin/server.cert
 bin/server.key
-config.js
-git rm --cached config.js
+config.js git rm --cached config.js
